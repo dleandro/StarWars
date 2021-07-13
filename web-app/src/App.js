@@ -3,15 +3,19 @@ import './App.css';
 import 'semantic-ui-css/semantic.min.css'
 import { Dropdown, Icon, Menu, Table } from 'semantic-ui-react'
 import { getStarWarsFilms, getCharactersPerFilm } from './services/ApiServices'
+import { Loader } from 'semantic-ui-react'
+
 
 
 function App() {
+
+  require('dotenv').config()
 
   const [starWarsMovies, setStarWarsMovies] = useState([])
 
   const [starWarsCharacters, setStarWarsCharacters] = useState([])
 
-  const [selectedFilm, setSelectedFilm] = useState(0)
+  const [selectedFilm, setSelectedFilm] = useState(undefined)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,13 +26,20 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      setStarWarsCharacters((await getCharactersPerFilm(selectedFilm)).data)
+      setStarWarsCharacters([])
+      if (selectedFilm !== undefined) {
+        setStarWarsCharacters((await getCharactersPerFilm(selectedFilm)).data)
+      }
     }
     fetchData()
   }, [selectedFilm])
 
   const updateSelectedFilm = (event, text) => {
-    setSelectedFilm(text.value)
+    if (text.value === "") {
+      setSelectedFilm(undefined)
+    } else {
+      setSelectedFilm(text.value)
+    }
   }
 
   return (
@@ -48,27 +59,32 @@ function App() {
           placeholder='Select a Movie'
         />
 
-        <Table celled style={{ width: '70%', marginLeft: '15%' }}>
-          <Table.Header>
-            <Table.HeaderCell>Name</Table.HeaderCell>
-            <Table.HeaderCell>Gender</Table.HeaderCell>
-            <Table.HeaderCell>Species</Table.HeaderCell>
-            <Table.HeaderCell>Planet they are from</Table.HeaderCell>
-          </Table.Header>
+        {selectedFilm !== undefined ?
+          <Table celled style={{ width: '70%', marginLeft: '15%' }}>
+            <Table.Header>
+              <Table.HeaderCell>Name</Table.HeaderCell>
+              <Table.HeaderCell>Gender</Table.HeaderCell>
+              <Table.HeaderCell>Species</Table.HeaderCell>
+              <Table.HeaderCell>Origin</Table.HeaderCell>
+            </Table.Header>
 
-          <Table.Body>
-            {starWarsCharacters.map(character =>
-              <Table.Row>
-                <Table.Cell>{character.name}</Table.Cell>
-                <Table.Cell>{character.gender}</Table.Cell>
-                <Table.Cell>{character.species}</Table.Cell>
-                <Table.Cell>{character.origin}</Table.Cell>
-              </Table.Row>
-            )}
+            <Table.Body>
+              {starWarsCharacters.map(character =>
+                <Table.Row>
+                  <Table.Cell>{character.name}</Table.Cell>
+                  <Table.Cell>{character.gender}</Table.Cell>
+                  <Table.Cell>{character.species}</Table.Cell>
+                  <Table.Cell>{character.origin}</Table.Cell>
+                </Table.Row>
+              )}
 
-          </Table.Body>
+            </Table.Body>
 
-        </Table>
+          </Table> :
+          undefined}
+
+
+        {starWarsCharacters.length === 0 && selectedFilm !== undefined ? <Loader active inline='centered' /> : undefined}
 
       </main>
 

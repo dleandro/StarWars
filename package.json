@@ -1,0 +1,26 @@
+{
+  "name": "taxitronic-starwars",
+  "version": "1.0.0",
+  "description": "Interview test for taxitronic",
+  "scripts": {
+    "apiInstall": "cd web-api && npm i",
+    "appInstall": "cd web-app && npm i",
+    "api": "cd web-api && npm run start",
+    "app": "cd web-app && npm run start",
+    "test": "mocha",
+    "startWebAPI": "cd web-api && npm run start",
+    "startWebAPP": "cd web-app && npm run start",
+    "start": "npm run api & npm run app",
+    "install": "npm run apiInstall && npm run appInstall"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dleandro/taxitronic-test.git"
+  },
+  "author": "dleandro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dleandro/taxitronic-test/issues"
+  },
+  "homepage": "https://github.com/dleandro/taxitronic-test#readme"
+}
